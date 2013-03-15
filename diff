@@ -1,0 +1,201 @@
+diff --git a/pom.xml b/pom.xml
+index 900f827..620f15d 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1,18 +1,20 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+ 
+   <parent>
+-    <groupId>org.jvnet.hudson.plugins</groupId>
++    <groupId>org.hudsonci.plugins</groupId>
+     <artifactId>analysis-pom</artifactId>
+-    <version>1.42</version>
+-    <relativePath>../analysis-pom/pom.xml</relativePath>
++    <version>1.42-h-1-SNAPSHOT</version>
++    <relativePath/>
+   </parent>
+ 
++  <groupId>org.hudsonci.plugins</groupId>
+   <artifactId>checkstyle</artifactId>
+   <packaging>hpi</packaging>
+   <name>Checkstyle Plug-in</name>
+-  <version>3.35</version>
+-  <url>http://wiki.jenkins-ci.org/x/GYCGAQ</url>
++  <version>3.35-h-1-SNAPSHOT</version>
++  <url>http://wiki.hudson-ci.org/x/GYCGAQ</url>
+   <description>This plug-in generates the trend report for
+     Checkstyle, an open source static code analysis program.</description>
+ 
+@@ -30,9 +32,9 @@
+ 
+   <dependencies>
+     <dependency>
+-      <groupId>org.jvnet.hudson.plugins</groupId>
++      <groupId>org.hudsonci.plugins</groupId>
+       <artifactId>analysis-core</artifactId>
+-      <version>1.49</version>
++      <version>1.49-h-1</version>
+     </dependency>
+     <dependency>
+       <groupId>xerces</groupId>
+@@ -40,25 +42,20 @@
+       <version>2.8.1</version>
+     </dependency>
+     <dependency>
+-      <groupId>org.jvnet.hudson.plugins</groupId>
++      <groupId>org.hudsonci.plugins</groupId>
+       <artifactId>analysis-test</artifactId>
+-      <version>1.9</version>
++      <version>1.9-h-1</version>
+       <scope>test</scope>
+     </dependency>
+   </dependencies>
+ 
+   <scm>
+-    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+-    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+-    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
++    <connection>scm:git:git://github.com/hudson3-plugins/checkstyle.git</connection>
++    <developerConnection>scm:git:git@github.com:hudson3-plugins/checkstyle.git</developerConnection>
++    <url>https://github.com/hudson3-plugins/checkstyle</url>
+   </scm>
+ 
+-  <repositories>
+-    <repository>
+-      <id>repo.jenkins-ci.org</id>
+-      <url>http://repo.jenkins-ci.org/public/</url>
+-    </repository>
+-  </repositories>
++  
+ 
+   <pluginRepositories>
+     <pluginRepository>
+@@ -67,5 +64,17 @@
+     </pluginRepository>
+   </pluginRepositories>
+ 
++<developers>
++    <developer>
++      <id>bobfoster</id>
++      <name>Bob Foster</name>
++      <email>bobfoster@gmail.com</email>
++      <roles>
++        <role>Maintainer</role>
++      </roles>
++    </developer>
++  </developers>
++  <properties>
++    <hudsonTags>maven</hudsonTags>
++  </properties>
+ </project>
+-
+diff --git a/src/main/java/hudson/plugins/checkstyle/MavenCheckStyleResultAction.java b/src/main/java/hudson/plugins/checkstyle/MavenCheckStyleResultAction.java
+index 7b7ff37..f10782f 100644
+--- a/src/main/java/hudson/plugins/checkstyle/MavenCheckStyleResultAction.java
++++ b/src/main/java/hudson/plugins/checkstyle/MavenCheckStyleResultAction.java
+@@ -78,7 +78,7 @@ public class MavenCheckStyleResultAction extends CheckStyleResultAction implemen
+ 
+     /**
+      * Called whenever a new module build is completed, to update the aggregated
+-     * report. When multiple builds complete simultaneously, Jenkins serializes
++     * report. When multiple builds complete simultaneously, Hudson serializes
+      * the execution of this method, so this method needs not be
+      * concurrency-safe.
+      *
+diff --git a/src/main/webapp/help-m2.html b/src/main/webapp/help-m2.html
+index 4e9074a..0a4f3e5 100644
+--- a/src/main/webapp/help-m2.html
++++ b/src/main/webapp/help-m2.html
+@@ -1,7 +1,7 @@
+ <div>
+-<p>Jenkins understands <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
++<p>Hudson understands <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
+ analysis report XML format. When this option is configured and your
+-build runs the maven goal <code>checkstyle:checkstyle</code> then Jenkins
++build runs the maven goal <code>checkstyle:checkstyle</code> then Hudson
+ provides useful information about analysis results, such as historical
+ result trend, module and package statistics, web UI for viewing analysis
+ reports and warnings, and so on.</p>
+diff --git a/src/main/webapp/help-m2_de.html b/src/main/webapp/help-m2_de.html
+index 0df1d56..859d857 100644
+--- a/src/main/webapp/help-m2_de.html
++++ b/src/main/webapp/help-m2_de.html
+@@ -1,10 +1,10 @@
+ <div>
+-<p>Jenkins kann <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
++<p>Hudson kann <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
+ Reports einlesen und darstellen. Wenn dies aktiviert wird und der Build
+ das Maven Goal <code>checkstyle:checkstyle</code> ausführt, dann
+-analysiert Jenkins nach jedem Build die erzeugten Checkstyle Dateien und
++analysiert Hudson nach jedem Build die erzeugten Checkstyle Dateien und
+ stellt deren Informationen in verschiedenen Ansichten dar: Trend
+-Anzeige, Projekt Statistik und Package Statistik. Zudem zeigt Jenkins die
++Anzeige, Projekt Statistik und Package Statistik. Zudem zeigt Hudson die
+ jeweiligen Warnungen direkt in der betroffen Datei an.</p>
+ <p>Das Plug-in wird nicht aufgerufen, wenn der Build fehlgeschlagen
+ ist, sondern nur für stabile bzw. instabile Builds (mit fehlgeschlagenen Tests).</p>
+diff --git a/src/main/webapp/help-m2_ja.html b/src/main/webapp/help-m2_ja.html
+index 8d0a969..dc6e73d 100644
+--- a/src/main/webapp/help-m2_ja.html
++++ b/src/main/webapp/help-m2_ja.html
+@@ -1,5 +1,5 @@
+ <div>
+-<p>Jenkinsは、<a href="http://checkstyle.sourceforge.net/">Checkstyle</a>のXML形式で生成された分析レポートを認識します。
++<p>Hudsonは、<a href="http://checkstyle.sourceforge.net/">Checkstyle</a>のXML形式で生成された分析レポートを認識します。
+ この機能を有効にし、ビルド実行時に、<code>checkstyle:checkstyle</code>ゴールが実行されれば、
+ 有用な情報が提供されるようになります。
+ 検出数の推移、モジュール・パッケージごとの統計、web UIで分析結果のレポートや警告等を提供します。</p>
+diff --git a/src/main/webapp/help.html b/src/main/webapp/help.html
+index 153017f..4cb0adb 100644
+--- a/src/main/webapp/help.html
++++ b/src/main/webapp/help.html
+@@ -1,11 +1,11 @@
+ <div>
+-<p>Jenkins understands <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
+-analysis report XML format. When this option is configured Jenkins shows
++<p>Hudson understands <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
++analysis report XML format. When this option is configured Hudson shows
+ the Checkstyle analysis results in different views: historical result
+ trend, module and package statistics, web UI for viewing analysis
+ reports and warnings, and so on.</p>
+ <p>You need to set up your build to run Checkstyle in order to use
+-this feature - this Jenkins plug-in does not perform the actual analysis!
++this feature - this Hudson plug-in does not perform the actual analysis!
+ This plug-in is not invoked for failed builds, it is only called for
+ stable or unstable builds (i.e., a build with failed tests).</p>
+ </div>
+\ No newline at end of file
+diff --git a/src/main/webapp/help_de.html b/src/main/webapp/help_de.html
+index 871ef18..6cebac6 100644
+--- a/src/main/webapp/help_de.html
++++ b/src/main/webapp/help_de.html
+@@ -1,12 +1,12 @@
+ <div>
+-<p>Jenkins kann <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
++<p>Hudson kann <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
+ Reports einlesen und darstellen. Wenn dieses Plug-in aktiviert wird,
+-analysiert Jenkins nach jedem Build die erzeugten Checkstyle Dateien und
++analysiert Hudson nach jedem Build die erzeugten Checkstyle Dateien und
+ stellt deren Informationen in verschiedenen Ansichten dar: Trend
+-Anzeige, Projekt und Package Statistiken, usw. Zudem zeigt Jenkins die
++Anzeige, Projekt und Package Statistiken, usw. Zudem zeigt Hudson die
+ jeweiligen Warnungen direkt in der betroffen Datei an.</p>
+ <p>Damit das Plug-in korrekt funktioniert, muss im Build
+-Checkstyle gestartet werden - das Jenkins Plug-in selbst macht dies
++Checkstyle gestartet werden - das Hudson Plug-in selbst macht dies
+ nicht! Das Plug-in wird nicht aufgerufen, wenn der Build fehlgeschlagen
+ ist, sondern nur für stabile bzw. instabile Builds (mit fehlgeschlagenen
+ Tests).</p>
+diff --git a/src/main/webapp/help_ja.html b/src/main/webapp/help_ja.html
+index cd067e9..c241280 100644
+--- a/src/main/webapp/help_ja.html
++++ b/src/main/webapp/help_ja.html
+@@ -1,5 +1,5 @@
+ <div>
+-<p>Jenkinsは、<a href="http://checkstyle.sourceforge.net/">Checkstyle</a>のXML形式で生成された分析レポートを認識します。
++<p>Hudsonは、<a href="http://checkstyle.sourceforge.net/">Checkstyle</a>のXML形式で生成された分析レポートを認識します。
+ このオプションが設定されると、Checkstyleの分析結果を、
+ 検出数の推移、モジュール・パッケージごとの統計、web UIでの分析レポートや警告等の様々な形式で提供します。</p>
+ <p>この機能を使うためにはビルド実行時に、Checkstyleが実行されるようビルドを設定する必要があります。

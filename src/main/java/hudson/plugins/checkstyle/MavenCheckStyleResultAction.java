@@ -9,6 +9,7 @@ import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.core.HealthDescriptor;
+import hudson.plugins.analysis.core.ParserResult;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class MavenCheckStyleResultAction extends CheckStyleResultAction implemen
      */
     public MavenCheckStyleResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor,
             final String defaultEncoding) {
-        super(owner, healthDescriptor);
+        super(owner, healthDescriptor, new CheckStyleResult(owner, defaultEncoding, new ParserResult(), false));
         this.defaultEncoding = defaultEncoding;
     }
 
@@ -77,7 +78,7 @@ public class MavenCheckStyleResultAction extends CheckStyleResultAction implemen
 
     /**
      * Called whenever a new module build is completed, to update the aggregated
-     * report. When multiple builds complete simultaneously, Jenkins serializes
+     * report. When multiple builds complete simultaneously, Hudson serializes
      * the execution of this method, so this method needs not be
      * concurrency-safe.
      *
@@ -92,7 +93,7 @@ public class MavenCheckStyleResultAction extends CheckStyleResultAction implemen
     }
 
     /** Backward compatibility. @deprecated */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("PMD")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
     @Deprecated
     private transient String height;

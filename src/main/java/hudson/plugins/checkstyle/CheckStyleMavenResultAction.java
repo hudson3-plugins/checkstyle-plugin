@@ -6,13 +6,13 @@ import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
+import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.core.HealthDescriptor;
+import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.analysis.core.MavenResultAction;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.CheckForNull;
 
 /**
  * A {@link CheckStyleResultAction} for native Maven jobs. This action
@@ -22,23 +22,6 @@ import javax.annotation.CheckForNull;
  * @author Ulli Hafner
  */
 public class CheckStyleMavenResultAction extends MavenResultAction<CheckStyleResult> {
-    /**
-     * Creates a new instance of {@link CheckStyleMavenResultAction}. This instance
-     * will have no result set in the beginning. The result will be set
-     * successively after each of the modules are build.
-     *
-     * @param owner
-     *            the associated build of this action
-     * @param healthDescriptor
-     *            health descriptor to use
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     */
-    public CheckStyleMavenResultAction(final MavenModuleSetBuild owner, final HealthDescriptor healthDescriptor,
-            final String defaultEncoding) {
-        super(new CheckStyleResultAction(owner, healthDescriptor), defaultEncoding, "CHECKSTYLE");
-    }
-
     /**
      * Creates a new instance of {@link CheckStyleMavenResultAction}.
      *
@@ -51,14 +34,15 @@ public class CheckStyleMavenResultAction extends MavenResultAction<CheckStyleRes
      * @param result
      *            the result in this build
      */
-    public CheckStyleMavenResultAction(final MavenBuild owner, final HealthDescriptor healthDescriptor,
+    public CheckStyleMavenResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor,
             final String defaultEncoding, final CheckStyleResult result) {
         super(new CheckStyleResultAction(owner, healthDescriptor, result), defaultEncoding, "CHECKSTYLE");
     }
 
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-        return new CheckStyleMavenResultAction(build, getHealthDescriptor(), getDisplayName());
+        return new CheckStyleMavenResultAction(build, getHealthDescriptor(), getDefaultEncoding(),
+                new CheckStyleResult(build, getDefaultEncoding(), new ParserResult(), false));
     }
 
     /** {@inheritDoc} */
@@ -72,8 +56,9 @@ public class CheckStyleMavenResultAction extends MavenResultAction<CheckStyleRes
     }
 
     @Override
-    protected CheckStyleResult createResult(@CheckForNull final CheckStyleResult existingResult, final CheckStyleResult additionalResult) {
-        return new CheckStyleReporterResult(getOwner(), additionalResult.getDefaultEncoding(), aggregate(existingResult, additionalResult));
+    protected CheckStyleResult createResult(final CheckStyleResult existingResult, final CheckStyleResult additionalResult) {
+        return new CheckStyleReporterResult(getOwner(), additionalResult.getDefaultEncoding(),
+                aggregate(existingResult, additionalResult), existingResult.useOnlyStableBuildsAsReference());
     }
 }
 

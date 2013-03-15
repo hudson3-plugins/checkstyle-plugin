@@ -87,8 +87,13 @@ public class CheckStylePublisher extends HealthAwarePublisher {
      *            annotation threshold
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as reference builds or not
      * @param shouldDetectModules
      *            determines whether module names should be derived from Maven POM or Ant build files
+     * @param canComputeNew
+     *            determines whether new warnings should be computed (with
+     *            respect to baseline)
      * @param pattern
      *            Ant file-set pattern to scan for Checkstyle files
      */
@@ -101,14 +106,15 @@ public class CheckStylePublisher extends HealthAwarePublisher {
             final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
-            final boolean canRunOnFailed, final boolean shouldDetectModules, final boolean canComputeNew,
-            final String pattern) {
+            final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean shouldDetectModules,
+            final boolean canComputeNew, final String pattern) {
         super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, shouldDetectModules, canComputeNew, PLUGIN_NAME);
+                canRunOnFailed, useStableBuildAsReference, shouldDetectModules, canComputeNew,
+                true, PLUGIN_NAME);
         this.pattern = pattern;
     }
     // CHECKSTYLE:ON
@@ -137,7 +143,7 @@ public class CheckStylePublisher extends HealthAwarePublisher {
         ParserResult project = build.getWorkspace().act(parser);
         logger.logLines(project.getLogMessages());
 
-        CheckStyleResult result = new CheckStyleResult(build, getDefaultEncoding(), project);
+        CheckStyleResult result = new CheckStyleResult(build, getDefaultEncoding(), project, getUseStableBuildAsReference());
         build.getActions().add(new CheckStyleResultAction(build, this, result));
 
         return result;
@@ -151,6 +157,6 @@ public class CheckStylePublisher extends HealthAwarePublisher {
     /** {@inheritDoc} */
     public MatrixAggregator createAggregator(final MatrixBuild build, final Launcher launcher,
             final BuildListener listener) {
-        return new CheckStyleAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding());
+        return new CheckStyleAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding(), useOnlyStableBuildsAsReference());
     }
 }
